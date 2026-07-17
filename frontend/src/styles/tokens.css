@@ -1,0 +1,13 @@
+:root {
+  --color-paper: #F2F4EF;
+  --color-ink: #1E2A28;
+  --color-ink-light: #5B655F;
+  --color-amber: #E8A33D;
+  --color-teal: #1F7A6A;
+  --color-coral: #E2572B;
+  --color-border: #DADFD3;
+
+  --font-display: 'Bricolage Grotesque', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
