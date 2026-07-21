@@ -56,7 +56,7 @@ export function IncomingBookingsPage() {
             <p className="eyebrow">Event Rental Platform</p>
             <h1>Входящие бронирования</h1>
           </div>
-          <Link to="/my-listings" className="btn-auth">← К моим объявлениям</Link>
+          <Link to="/" className="btn-auth">← К каталогу</Link>
         </div>
       </header>
 

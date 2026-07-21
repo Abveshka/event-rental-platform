@@ -81,7 +81,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class EquipmentSerializer(serializers.ModelSerializer):
     category_name = serializers.CharField(source="category.name", read_only=True)
-    supplier_name = serializers.CharField(source="supplier.username", read_only=True)
+    supplier_name = serializers.SerializerMethodField()
     supplier = serializers.PrimaryKeyRelatedField(read_only=True)
     images = serializers.SerializerMethodField()
 
@@ -109,6 +109,9 @@ class EquipmentSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
+
+    def get_supplier_name(self, obj):
+        return obj.supplier.company_name or obj.supplier.username
 
     def get_images(self, obj):
         return EquipmentImageSerializer(obj.images.all(), many=True).data
@@ -164,6 +167,8 @@ class RentalRequestSerializer(serializers.ModelSerializer):
 
 class BookingItemSerializer(serializers.ModelSerializer):
     equipment_title = serializers.CharField(source="equipment.title", read_only=True)
+    equipment_supplier = serializers.IntegerField(source="equipment.supplier_id", read_only=True)
+
     price_per_day = serializers.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -180,6 +185,7 @@ class BookingItemSerializer(serializers.ModelSerializer):
             "price_per_day",
             "start_date",
             "end_date",
+            "equipment_supplier"
         ]
 
     def validate(self, attrs):
@@ -218,6 +224,7 @@ class BookingItemSerializer(serializers.ModelSerializer):
 class BookingSerializer(serializers.ModelSerializer):
     organizer = serializers.StringRelatedField(read_only=True)
     items = BookingItemSerializer(many=True)
+    has_review = serializers.SerializerMethodField()
     total_amount = serializers.DecimalField(
         max_digits=12,
         decimal_places=2,
@@ -235,8 +242,12 @@ class BookingSerializer(serializers.ModelSerializer):
             "items",
             "created_at",
             "updated_at",
+            "has_review",
         ]
         read_only_fields = ["status", "created_at", "updated_at"]
+
+    def get_has_review(self, obj):
+        return Review.objects.filter(booking=obj).exists()
 
     def create(self, validated_data):
         items_data = validated_data.pop("items", [])
@@ -273,18 +284,40 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = [
-            "id",
-            "booking",
-            "reviewer",
-            "supplier",
-            "supplier_name",
-            "rating",
-            "comment",
-            "created_at",
-        ]
+        fields = ["id", "booking", "reviewer", "supplier", "supplier_name", "rating", "comment", "created_at"]
         read_only_fields = ["created_at"]
+
+    def validate(self, attrs):
+        request = self.context["request"]
+        booking = attrs.get("booking")
+        supplier = attrs.get("supplier")
+
+        if booking.organizer_id != request.user.id:
+            raise serializers.ValidationError("Оставить отзыв можно только к своим бронированиям.")
+
+        if booking.status != "completed":
+            raise serializers.ValidationError("Отзыв можно оставить только после завершённой аренды.")
+
+        if Review.objects.filter(booking=booking).exists():
+            raise serializers.ValidationError("Вы уже оставили отзыв по этому бронированию.")
+
+        supplier_ids = set(booking.items.values_list("equipment__supplier_id", flat=True))
+        if supplier.id not in supplier_ids:
+            raise serializers.ValidationError("Этот поставщик не участвовал в данном бронировании.")
+
+        if not (1 <= attrs.get("rating", 0) <= 5):
+            raise serializers.ValidationError("Оценка должна быть от 1 до 5.")
+
+        return attrs
 
     def create(self, validated_data):
         request = self.context["request"]
-        return Review.objects.create(reviewer=request.user, **validated_data)
+        review = Review.objects.create(reviewer=request.user, **validated_data)
+        self._update_supplier_rating(review.supplier)
+        return review
+
+    def _update_supplier_rating(self, supplier):
+        from django.db.models import Avg
+        avg = Review.objects.filter(supplier=supplier).aggregate(Avg("rating"))["rating__avg"]
+        supplier.rating = round(avg or 0, 2)
+        supplier.save(update_fields=["rating"])

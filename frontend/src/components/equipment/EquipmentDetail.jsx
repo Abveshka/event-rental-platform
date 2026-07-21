@@ -1,24 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BookingPanel } from "./BookingPanel";
 import { API_ORIGIN } from "../../api/config";
+import { getSupplierReviews } from "../../api/reviews";
 
 export function EquipmentDetail({ item, onClose, isLoggedIn, onRequireAuth }) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [reviews, setReviews] = useState([]);
 
-  if (!item) {
-    return (
-      <div className="detail-placeholder">
-        <div className="placeholder-content">
-          <h2>Выберите оборудование</h2>
-          <p>Нажмите на карточку товара ниже, чтобы увидеть подробную информацию</p>
-        </div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (!item) return;
+    getSupplierReviews(item.supplier).then(setReviews).catch(() => setReviews([]));
+  }, [item?.supplier]);
 
   const images = item.images && item.images.length > 0 ? item.images : [];
   const activeImage = images[activeImageIndex];
   const activeImageUrl = activeImage ? `${API_ORIGIN}${activeImage.image}` : null;
+
+  const averageRating = reviews.length > 0
+    ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
+    : null;
+
+  const renderStars = (rating) => {
+    const full = Math.round(rating);
+    return "★".repeat(full) + "☆".repeat(5 - full);
+  };
 
   return (
     <div className="equipment-detail-page">
@@ -58,6 +63,7 @@ export function EquipmentDetail({ item, onClose, isLoggedIn, onRequireAuth }) {
           <section>
             <h3>Характеристики</h3>
             <ul className="equipment-detail-specs">
+              <li><span>Поставщик</span><span>{item.supplier_name}</span></li>
               <li><span>Город</span><span>{item.city}</span></li>
               <li><span>Адрес</span><span>{item.address || "Не указан"}</span></li>
               <li><span>Категория</span><span>{item.category_name || "Не указана"}</span></li>
@@ -88,15 +94,35 @@ export function EquipmentDetail({ item, onClose, isLoggedIn, onRequireAuth }) {
       </div>
 
       <div className="equipment-detail-reviews">
-        <h3>Отзывы</h3>
+        <h3>Отзывы о поставщике {item.supplier_name}</h3>
+
         <div className="reviews-summary-card">
-          <div className="reviews-summary-card__score">—</div>
-          <div className="reviews-summary-card__stars">☆☆☆☆☆</div>
-          <p className="reviews-summary-card__count">Пока нет отзывов</p>
+          <div className="reviews-summary-card__score">{averageRating || "—"}</div>
+          <div className="reviews-summary-card__stars">{renderStars(averageRating || 0)}</div>
+          <p className="reviews-summary-card__count">
+            {reviews.length > 0 ? `${reviews.length} отзыв(ов)` : "Пока нет отзывов"}
+          </p>
         </div>
-        <p className="reviews-placeholder">
-          Станьте первым, кто оставит отзыв после аренды этого оборудования!
-        </p>
+
+        {reviews.length === 0 && (
+          <p className="reviews-placeholder">
+            Станьте первым, кто оставит отзыв после аренды у этого поставщика!
+          </p>
+        )}
+
+        {reviews.length > 0 && (
+          <div className="reviews-list">
+            {reviews.map((review) => (
+              <div className="review-card" key={review.id}>
+                <div className="review-card__header">
+                  <span className="review-card__author">{review.reviewer}</span>
+                  <span className="review-card__stars">{renderStars(review.rating)}</span>
+                </div>
+                {review.comment && <p className="review-card__comment">{review.comment}</p>}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

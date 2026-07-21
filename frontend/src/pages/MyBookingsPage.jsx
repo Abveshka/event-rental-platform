@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getMyBookings, cancelBooking, deleteBooking } from "../api/bookings";
+import { createReview } from "../api/reviews";
+import { extractErrorMessage } from "../api/errors";
 import "../components/equipment/Equipment.css";
 
 const STATUS_LABELS = {
@@ -10,10 +12,68 @@ const STATUS_LABELS = {
   completed: "Завершено",
 };
 
+function StarPicker({ value, onChange }) {
+  return (
+    <div className="star-picker">
+      {[1, 2, 3, 4, 5].map((n) => (
+        <button
+          key={n}
+          type="button"
+          className="star-picker__star"
+          onClick={() => onChange(n)}
+        >
+          {n <= value ? "★" : "☆"}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function ReviewForm({ booking, onSubmitted }) {
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+
+  const supplierId = booking.items[0]?.equipment_supplier;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setIsSubmitting(true);
+
+    try {
+      await createReview(booking.id, supplierId, rating, comment);
+      onSubmitted();
+    } catch (err) {
+      setError(extractErrorMessage(err));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <form className="review-form" onSubmit={handleSubmit}>
+      <StarPicker value={rating} onChange={setRating} />
+      <textarea
+        placeholder="Расскажите, как прошла аренда (необязательно)"
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+        rows="3"
+      />
+      {error && <p className="form-error">{error}</p>}
+      <button type="submit" className="btn-auth" disabled={isSubmitting}>
+        {isSubmitting ? "Отправляем..." : "Отправить отзыв"}
+      </button>
+    </form>
+  );
+}
+
 export function MyBookingsPage() {
   const [bookings, setBookings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [openReviewFor, setOpenReviewFor] = useState(null);
 
   useEffect(() => {
     getMyBookings()
@@ -47,6 +107,13 @@ export function MyBookingsPage() {
     } catch (err) {
       alert("Не удалось удалить бронирование");
     }
+  };
+
+  const handleReviewSubmitted = (bookingId) => {
+    setBookings((current) =>
+      current.map((b) => (b.id === bookingId ? { ...b, has_review: true } : b))
+    );
+    setOpenReviewFor(null);
   };
 
   return (
@@ -104,6 +171,28 @@ export function MyBookingsPage() {
                   >
                     Отменить бронирование
                   </button>
+                )}
+
+                {booking.status === "completed" && !booking.has_review && (
+                  <>
+                    {openReviewFor === booking.id ? (
+                      <ReviewForm
+                        booking={booking}
+                        onSubmitted={() => handleReviewSubmitted(booking.id)}
+                      />
+                    ) : (
+                      <button
+                        className="btn-auth"
+                        onClick={() => setOpenReviewFor(booking.id)}
+                      >
+                        Оставить отзыв
+                      </button>
+                    )}
+                  </>
+                )}
+
+                {booking.status === "completed" && booking.has_review && (
+                  <p className="booking-panel__success">Спасибо, вы уже оставили отзыв</p>
                 )}
               </div>
             ))}
