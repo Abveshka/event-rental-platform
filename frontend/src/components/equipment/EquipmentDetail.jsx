@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { BookingPanel } from "./BookingPanel";
 import { API_ORIGIN } from "../../api/config";
 import { getSupplierReviews } from "../../api/reviews";
+import { Link } from "react-router-dom";
 
 export function EquipmentDetail({ item, onClose, isLoggedIn, onRequireAuth }) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -63,7 +64,10 @@ export function EquipmentDetail({ item, onClose, isLoggedIn, onRequireAuth }) {
           <section>
             <h3>Характеристики</h3>
             <ul className="equipment-detail-specs">
-              <li><span>Поставщик</span><span>{item.supplier_name}</span></li>
+              <li>
+                <span>Поставщик</span>
+                <Link to={`/suppliers/${item.supplier}`}>{item.supplier_name}</Link>
+              </li>
               <li><span>Город</span><span>{item.city}</span></li>
               <li><span>Адрес</span><span>{item.address || "Не указан"}</span></li>
               <li><span>Категория</span><span>{item.category_name || "Не указана"}</span></li>

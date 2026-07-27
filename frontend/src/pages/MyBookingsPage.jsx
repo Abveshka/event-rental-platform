@@ -137,32 +137,39 @@ export function MyBookingsPage() {
         )}
 
         {!isLoading && !error && bookings.length > 0 && (
-          <div className="equipment-grid">
-            {bookings.map((booking) => (
-              <div className="equipment-card" key={booking.id}>
-                <div className="booking-card-header">
-                  <h2>Бронирование №{booking.id}</h2>
-                  {booking.status === "cancelled" && (
-                    <button
-                      className="btn-delete-icon"
-                      onClick={() => handleDelete(booking.id)}
-                      title="Удалить бронирование"
-                    >
-                      🗑️
-                    </button>
-                  )}
-                </div>
+            <div className="equipment-grid">
+              {bookings.map((booking) => (
+                  <div className="equipment-card" key={booking.id}>
+                    <div className="booking-card-header">
+                      <h2>Бронирование №{booking.id}</h2>
+                      {booking.status === "cancelled" && (
+                          <button
+                              className="btn-delete-icon"
+                              onClick={() => handleDelete(booking.id)}
+                              title="Удалить бронирование"
+                          >
+                            🗑️
+                          </button>
+                      )}
+                    </div>
 
-                <p><strong>Статус:</strong> {STATUS_LABELS[booking.status] || booking.status}</p>
-                <p><strong>Сумма:</strong> {booking.total_amount} ₽</p>
-                <ul>
-                  {booking.items.map((item) => (
-                    <li key={item.id}>
-                      {item.equipment_title} — {item.quantity} шт.
-                      ({item.start_date} → {item.end_date})
-                    </li>
-                  ))}
-                </ul>
+                    <p>
+                      <strong>Статус:</strong> {STATUS_LABELS[booking.status] || booking.status}
+                      {booking.status === "cancelled" && booking.cancelled_by && (
+                          <span style={{color: "var(--color-ink-light)", fontSize: "0.85em"}}>
+              {" "}({booking.cancelled_by === "supplier" ? "отклонено поставщиком" : "отменено вами"})
+            </span>
+                      )}
+                    </p>
+                    <p><strong>Сумма:</strong> {booking.total_amount} ₽</p>
+                    <ul>
+                      {booking.items.map((item) => (
+                          <li key={item.id}>
+                            {item.equipment_title} — {item.quantity} шт.
+                            ({item.start_date} → {item.end_date})
+                          </li>
+                      ))}
+                    </ul>
 
                 {(booking.status === "pending" || booking.status === "confirmed") && (
                   <button
@@ -189,6 +196,17 @@ export function MyBookingsPage() {
                       </button>
                     )}
                   </>
+                )}
+
+                {booking.status === "confirmed" && !booking.is_paid && (
+                    <Link to={`/bookings/${booking.id}/pay`} className="btn-book-primary"
+                          style={{display: "block", textAlign: "center", textDecoration: "none"}}>
+                      Оплатить {booking.total_amount} ₽
+                    </Link>
+                )}
+
+                {booking.is_paid && (
+                    <p className="booking-panel__success">Оплачено</p>
                 )}
 
                 {booking.status === "completed" && booking.has_review && (

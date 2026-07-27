@@ -31,3 +31,7 @@ export function confirmBooking(bookingId) {
 export function declineBooking(bookingId) {
   return request(`/bookings/${bookingId}/decline/`, { method: "POST" });
 }
+
+export function payBooking(bookingId) {
+  return request(`/bookings/${bookingId}/pay/`, { method: "POST" });
+}

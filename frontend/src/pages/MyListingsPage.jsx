@@ -89,23 +89,31 @@ export function MyListingsPage() {
                 style={{ cursor: "pointer" }}
               >
                 <div className="equipment-card-tag__icons">
+                  <Link
+                      to={`/my-listings/${item.id}/edit`}
+                      className="btn-delete-icon"
+                      onClick={(e) => e.stopPropagation()}
+                      title="Редактировать объявление"
+                  >
+                    ✏️
+                  </Link>
                   <button
-                    className="btn-delete-icon"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleToggleActive(item.id);
-                    }}
-                    title={item.is_active ? "Скрыть объявление" : "Вернуть в каталог"}
+                      className="btn-delete-icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggleActive(item.id);
+                      }}
+                      title={item.is_active ? "Скрыть объявление" : "Вернуть в каталог"}
                   >
                     {item.is_active ? "👁️" : "🔁"}
                   </button>
                   <button
-                    className="btn-delete-icon"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete(item.id);
-                    }}
-                    title="Удалить объявление"
+                      className="btn-delete-icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(item.id);
+                      }}
+                      title="Удалить объявление"
                   >
                     🗑️
                   </button>

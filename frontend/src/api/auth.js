@@ -17,3 +17,10 @@ export function register(userData) {
 export function getCurrentUser() {
   return request("/users/me/");
 }
+
+export function updateProfile(data) {
+  return request("/users/me/", {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}

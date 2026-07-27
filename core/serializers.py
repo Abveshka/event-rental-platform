@@ -224,27 +224,17 @@ class BookingItemSerializer(serializers.ModelSerializer):
 class BookingSerializer(serializers.ModelSerializer):
     organizer = serializers.StringRelatedField(read_only=True)
     items = BookingItemSerializer(many=True)
+    total_amount = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
     has_review = serializers.SerializerMethodField()
-    total_amount = serializers.DecimalField(
-        max_digits=12,
-        decimal_places=2,
-        read_only=True,
-    )
 
     class Meta:
         model = Booking
         fields = [
-            "id",
-            "organizer",
-            "request",
-            "total_amount",
-            "status",
-            "items",
-            "created_at",
-            "updated_at",
-            "has_review",
+            "id", "organizer", "request", "total_amount", "status",
+            "cancelled_by", "is_paid", "paid_at", "items", "has_review",
+            "created_at", "updated_at",
         ]
-        read_only_fields = ["status", "created_at", "updated_at"]
+        read_only_fields = ["status", "cancelled_by", "is_paid", "paid_at", "created_at", "updated_at"]
 
     def get_has_review(self, obj):
         return Review.objects.filter(booking=obj).exists()
@@ -321,3 +311,24 @@ class ReviewSerializer(serializers.ModelSerializer):
         avg = Review.objects.filter(supplier=supplier).aggregate(Avg("rating"))["rating__avg"]
         supplier.rating = round(avg or 0, 2)
         supplier.save(update_fields=["rating"])
+
+class SupplierPublicSerializer(serializers.ModelSerializer):
+    display_name = serializers.SerializerMethodField()
+    specialties_list = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ["id", "display_name", "city", "rating", "description", "specialties_list"]
+
+    def get_display_name(self, obj):
+        return obj.company_name or obj.username
+
+    def get_specialties_list(self, obj):
+        if not obj.specialties:
+            return []
+        return [tag.strip() for tag in obj.specialties.split(",") if tag.strip()]
+
+class ProfileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["company_name", "description", "specialties", "city", "phone"]

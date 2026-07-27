@@ -76,6 +76,16 @@ export function IncomingBookingsPage() {
                 <div className="equipment-card-tag__body">
                   <p className="equipment-card-tag__eyebrow">
                     {STATUS_LABELS[booking.status] || booking.status}
+                    {booking.status === "cancelled" && booking.cancelled_by && (
+                        <span style={{fontSize: "0.85em"}}>
+      {" "}({booking.cancelled_by === "supplier" ? "отклонено вами" : "отменено организатором"})
+    </span>
+                    )}
+                    {booking.status === "confirmed" && (
+                        <span style={{color: booking.is_paid ? "var(--color-teal)" : "var(--color-coral)"}}>
+      {" · "}{booking.is_paid ? "Оплачено" : "Не оплачено"}
+    </span>
+                    )}
                   </p>
                   <h2 className="equipment-card-tag__title">
                     Бронирование №{booking.id}

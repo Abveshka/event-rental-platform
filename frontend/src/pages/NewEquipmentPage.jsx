@@ -99,15 +99,15 @@ export function NewEquipmentPage() {
         </div>
       </header>
 
-      <form className="list-section" onSubmit={handleSubmit} style={{ maxWidth: 500 }}>
+      <form className="narrow-content" onSubmit={handleSubmit}>
         <div className="form-row">
           <label>Название</label>
-          <input name="title" value={formData.title} onChange={handleChange} required />
+          <input name="title" value={formData.title} onChange={handleChange} required/>
         </div>
 
         <div className="form-row">
           <label>Описание</label>
-          <textarea name="description" value={formData.description} onChange={handleChange} rows="4" required />
+          <textarea name="description" value={formData.description} onChange={handleChange} rows="4" required/>
         </div>
 
         <div className="form-row">
@@ -115,70 +115,70 @@ export function NewEquipmentPage() {
           <select name="category" value={formData.category} onChange={handleChange}>
             <option value="">Без категории</option>
             {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>{cat.name}</option>
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
             ))}
           </select>
         </div>
 
         <div className="form-row">
           <label>Цена за день (₽)</label>
-          <input type="number" name="price_per_day" value={formData.price_per_day} onChange={handleChange} required />
+          <input type="number" name="price_per_day" value={formData.price_per_day} onChange={handleChange} required/>
         </div>
 
         <div className="form-row">
           <label>Залог (₽)</label>
-          <input type="number" name="deposit" value={formData.deposit} onChange={handleChange} />
+          <input type="number" name="deposit" value={formData.deposit} onChange={handleChange}/>
         </div>
 
         <div className="form-row">
           <label>Количество</label>
-          <input type="number" min="1" name="quantity" value={formData.quantity} onChange={handleChange} required />
+          <input type="number" min="1" name="quantity" value={formData.quantity} onChange={handleChange} required/>
         </div>
 
         <div className="form-row">
           <label>Город</label>
-          <input name="city" value={formData.city} onChange={handleChange} required />
+          <input name="city" value={formData.city} onChange={handleChange} required/>
         </div>
 
         <div className="form-row">
           <label>Адрес</label>
-          <input name="address" value={formData.address} onChange={handleChange} />
+          <input name="address" value={formData.address} onChange={handleChange}/>
         </div>
 
         <div className="form-row">
           <label>
             <input
-              type="checkbox"
-              name="delivery_available"
-              checked={formData.delivery_available}
-              onChange={handleChange}
-              style={{ width: "auto", marginRight: 8 }}
+                type="checkbox"
+                name="delivery_available"
+                checked={formData.delivery_available}
+                onChange={handleChange}
+                style={{width: "auto", marginRight: 8}}
             />
             Доставка доступна
           </label>
         </div>
 
         {formData.delivery_available && (
-          <div className="form-row">
-            <label>Цена доставки (₽)</label>
-            <input type="number" name="delivery_price" value={formData.delivery_price} onChange={handleChange} />
-          </div>
+            <div className="form-row">
+              <label>Цена доставки (₽)</label>
+              <input type="number" name="delivery_price" value={formData.delivery_price} onChange={handleChange}/>
+            </div>
         )}
 
         <div className="form-row">
           <label>Фотографии (первая станет главной)</label>
-          <input type="file" accept="image/*" multiple onChange={handleFilesChange} />
+          <input type="file" accept="image/*" multiple onChange={handleFilesChange}/>
         </div>
 
         {previewUrls.length > 0 && (
-          <div className="new-equipment-previews">
-            {previewUrls.map((url, index) => (
-              <div key={url} className="new-equipment-previews__item">
-                <img src={url} alt={`Превью ${index + 1}`} />
-                {index === 0 && <span className="new-equipment-previews__badge">Главное</span>}
-              </div>
-            ))}
-          </div>
+            <div className="new-equipment-previews">
+              {previewUrls.map((url, index) => (
+                  <div key={url} className="new-equipment-previews__item">
+                    <img src={url} alt={`Превью ${index + 1}`}/>
+                    {index === 0 && <span className="new-equipment-previews__badge">Главное</span>}
+                  </div>
+              ))}
+            </div>
         )}
 
         {error && <p className="form-error">{error}</p>}
