@@ -332,3 +332,23 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["company_name", "description", "specialties", "city", "phone"]
+
+class SupplierPublicSerializer(serializers.ModelSerializer):
+    display_name = serializers.SerializerMethodField()
+    specialties_list = serializers.SerializerMethodField()
+    listings_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ["id", "display_name", "city", "rating", "description", "specialties_list", "listings_count"]
+
+    def get_display_name(self, obj):
+        return obj.company_name or obj.username
+
+    def get_specialties_list(self, obj):
+        if not obj.specialties:
+            return []
+        return [tag.strip() for tag in obj.specialties.split(",") if tag.strip()]
+
+    def get_listings_count(self, obj):
+        return obj.equipments.filter(is_active=True).count()

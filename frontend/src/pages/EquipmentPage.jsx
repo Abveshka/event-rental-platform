@@ -121,6 +121,7 @@ export function EquipmentPage() {
                 <Link to="/my-listings" className="btn-auth">Мои объявления</Link>
                 <Link to="/my-bookings" className="btn-auth">Мои бронирования</Link>
                 <Link to="/incoming-bookings" className="btn-auth">Входящие брони</Link>
+                <Link to="/suppliers" className="btn-auth">Поставщики</Link>
                 <button className="btn-auth" onClick={handleLogout}>Выйти</button>
               </>
             ) : (
