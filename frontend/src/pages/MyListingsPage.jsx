@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getMyEquipment, deleteEquipment, toggleEquipmentActive } from "../api/equipment";
 import { extractErrorMessage } from "../api/errors";
-import "../components/equipment/Equipment.css";
+
 
 export function MyListingsPage() {
   const navigate = useNavigate();

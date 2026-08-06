@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getCurrentUser, updateProfile } from "../api/auth";
 import { extractErrorMessage } from "../api/errors";
-import "../components/equipment/Equipment.css";
 
 export function ProfilePage() {
   const [user, setUser] = useState(null);
@@ -76,83 +75,93 @@ export function ProfilePage() {
         </div>
       </header>
 
-      <div className="list-section">
-        {isLoading && <p className="status-message">Загрузка...</p>}
-        {error && <p className="status-message status-message--error">{error}</p>}
+      {isLoading && <p className="status-message">Загрузка...</p>}
+      {error && <p className="status-message status-message--error">{error}</p>}
 
-        {!isLoading && !error && user && (
-          <>
-            <div className="equipment-card-tag" style={{ maxWidth: 400, marginBottom: 24 }}>
-              <div className="equipment-card-tag__body">
-                <h2 className="equipment-card-tag__title">{user.username}</h2>
-                <p><strong>Email:</strong> {user.email || "Не указан"}</p>
-                <p><strong>Дата регистрации:</strong> {new Date(user.date_joined).toLocaleDateString("ru-RU")}</p>
+      {!isLoading && !error && user && (
+        <div className="narrow-content" style={{ maxWidth: 560 }}>
+          <div className="profile-hero">
+            <p className="profile-hero__eyebrow">Аккаунт</p>
+            <h2 className="profile-hero__title">{user.company_name || user.username}</h2>
 
-                <Link to="/my-bookings" className="btn-auth" style={{ marginTop: 16, display: "inline-block" }}>
-                  Мои бронирования
-                </Link>
-                <button className="btn-auth" onClick={handleLogout} style={{ marginTop: 16, marginLeft: 8 }}>
-                  Выйти
-                </button>
+            <div className="profile-hero__meta">
+              <div className="profile-hero__meta-item">
+                <span className="profile-hero__meta-label">Email</span>
+                <span className="profile-hero__meta-value">{user.email || "Не указан"}</span>
+              </div>
+              <div className="profile-hero__meta-item">
+                <span className="profile-hero__meta-label">На платформе с</span>
+                <span className="profile-hero__meta-value">
+                  {new Date(user.date_joined).toLocaleDateString("ru-RU")}
+                </span>
               </div>
             </div>
 
-            <form className="equipment-card-tag" onSubmit={handleSave} style={{ maxWidth: 500 }}>
-              <div className="equipment-card-tag__body">
-                <h2 className="equipment-card-tag__title" style={{ marginBottom: 16 }}>О компании</h2>
+            <div className="profile-hero__actions">
+              <Link to="/my-bookings" className="btn-auth">Мои бронирования</Link>
+              <Link to="/my-listings" className="btn-auth">Мои объявления</Link>
+              <button className="btn-auth" onClick={handleLogout}>Выйти</button>
+            </div>
+          </div>
 
-                <div className="form-row">
-                  <label>Название компании</label>
-                  <input
-                    name="company_name"
-                    value={formData.company_name}
-                    onChange={handleChange}
-                    placeholder="Если вы поставщик оборудования"
-                  />
-                </div>
+          <form className="profile-form-card" onSubmit={handleSave}>
+            <h2>О компании</h2>
+            <p className="profile-form-card__hint">
+              Эта информация видна другим пользователям на вашей публичной странице
+            </p>
 
-                <div className="form-row">
-                  <label>О компании</label>
-                  <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleChange}
-                    rows="4"
-                    placeholder="Расскажите о вашем опыте, подходе к работе"
-                  />
-                </div>
+            <div className="form-row">
+              <label>Название компании</label>
+              <input
+                name="company_name"
+                value={formData.company_name}
+                onChange={handleChange}
+                placeholder="Если вы поставщик оборудования"
+              />
+            </div>
 
-                <div className="form-row">
-                  <label>Специализация (через запятую)</label>
-                  <input
-                    name="specialties"
-                    value={formData.specialties}
-                    onChange={handleChange}
-                    placeholder="Свадьбы, Корпоративы, Свет и звук"
-                  />
-                </div>
+            <div className="form-row">
+              <label>О компании</label>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                rows="4"
+                placeholder="Расскажите о вашем опыте, подходе к работе"
+              />
+            </div>
 
-                <div className="form-row">
-                  <label>Город</label>
-                  <input name="city" value={formData.city} onChange={handleChange} />
-                </div>
+            <div className="form-row">
+              <label>Специализация (через запятую)</label>
+              <input
+                name="specialties"
+                value={formData.specialties}
+                onChange={handleChange}
+                placeholder="Свадьбы, Корпоративы, Свет и звук"
+              />
+            </div>
 
-                <div className="form-row">
-                  <label>Телефон</label>
-                  <input name="phone" value={formData.phone} onChange={handleChange} />
-                </div>
-
-                {saveError && <p className="form-error">{saveError}</p>}
-                {saveSuccess && <p className="booking-panel__success">Профиль обновлён</p>}
-
-                <button type="submit" className="btn-book-primary" disabled={isSaving}>
-                  {isSaving ? "Сохраняем..." : "Сохранить"}
-                </button>
+            <div className="profile-form__grid">
+              <div className="form-row">
+                <label>Город</label>
+                <input name="city" value={formData.city} onChange={handleChange} />
               </div>
-            </form>
-          </>
-        )}
-      </div>
+
+              <div className="form-row">
+                <label>Телефон</label>
+                <input name="phone" value={formData.phone} onChange={handleChange} />
+              </div>
+            </div>
+
+            {saveError && <p className="form-error">{saveError}</p>}
+            {saveSuccess && <p className="booking-panel__success">Профиль обновлён</p>}
+
+            <button type="submit" className="btn-book-primary" disabled={isSaving}>
+              {isSaving ? "Сохраняем..." : "Сохранить"}
+            </button>
+          </form>
+        </div>
+      )}
     </main>
   );
 }

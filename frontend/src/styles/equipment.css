@@ -1,0 +1,569 @@
+/* ============ ФИЛЬТРЫ КАТАЛОГА ============ */
+
+.equipment-filters {
+  background: white;
+  border: 0.5px solid var(--color-border);
+  padding: 12px 16px;
+  border-radius: 4px 12px 4px 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 24px;
+}
+
+.equipment-filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 150px;
+}
+
+.equipment-filters span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-light);
+}
+
+.equipment-filters input,
+.equipment-filters select {
+  padding: 7px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--color-ink);
+  background: white;
+  transition: border-color 0.2s;
+}
+
+.equipment-filters input:focus,
+.equipment-filters select:focus {
+  outline: none;
+  border-color: var(--color-teal);
+}
+
+.equipment-filters button {
+  padding: 7px 16px;
+  background: transparent;
+  color: var(--color-coral);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.equipment-filters button:hover {
+  border-color: var(--color-coral);
+  background: #fdf2ee;
+}
+
+.equipment-container {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ============ КАРТОЧКА ТОВАРА (в сетках) ============ */
+
+.equipment-card-tag {
+  position: relative;
+  background: white;
+  border: 0.5px solid var(--color-border);
+  border-radius: 4px 16px 4px 4px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  font-family: var(--font-body);
+}
+
+.equipment-card-tag:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(30, 42, 40, 0.1);
+}
+
+.equipment-card-tag__icons {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  z-index: 2;
+}
+
+.equipment-card-tag__notch {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 32px 32px 0;
+  border-color: transparent var(--color-amber) transparent transparent;
+}
+
+.equipment-card-tag__notch::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  right: -26px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-paper);
+}
+
+.equipment-card-tag__image {
+  height: 180px;
+  background: #dfe3d8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-ink-light);
+  font-size: 13px;
+  overflow: hidden;
+}
+
+.equipment-card-tag__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.equipment-card-tag__body {
+  padding: 46px 16px 16px 16px;
+}
+
+.equipment-card-tag__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-teal);
+  margin: 0 0 6px;
+}
+
+.equipment-card-tag__title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin: 0 0 14px;
+}
+
+.equipment-card-tag__footer {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-top: 1px dashed var(--color-border);
+  padding-top: 10px;
+}
+
+.equipment-card-tag__price {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.equipment-card-tag__price span {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--color-ink-light);
+}
+
+.equipment-card-tag__stock {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-coral);
+}
+
+/* ============ ЗАГРУЗКА ФОТО В ФОРМАХ ============ */
+
+.new-equipment-previews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.new-equipment-previews__item {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.new-equipment-previews__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.new-equipment-previews__badge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-amber);
+  color: var(--color-ink);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  text-align: center;
+  padding: 2px 0;
+}
+
+/* ============ ДЕТАЛЬНАЯ СТРАНИЦА ТОВАРА ============ */
+
+.equipment-detail-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.detail-back {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: var(--color-ink-light);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 7px 10px;
+  margin: 13px 0 0 20px;
+  transition: color 0.2s;
+  border-radius: 4px;
+  border: 0.5px solid var(--color-border);
+}
+
+.detail-back:hover {
+  color: var(--color-amber);
+}
+
+.equipment-detail-main {
+  display: grid;
+  grid-template-columns:  1.5fr 2fr 340px;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.equipment-detail-gallery {
+  display: flex;
+  flex-direction: column;
+}
+
+.equipment-detail-gallery__main {
+  border-radius: 4px;
+  overflow: hidden;
+  border: 0.5px solid var(--color-border);
+  background: #dfe3d8;
+  flex: 1;
+  min-height: 0;
+}
+
+.equipment-detail-gallery__main img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+  object-fit: contain;
+}
+
+.equipment-detail-gallery__placeholder {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-ink-light);
+  font-size: 13px;
+}
+
+.thumbnail-btn {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  background: none;
+}
+
+.thumbnail-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.thumbnail-btn.active {
+  border-color: #10b981;
+}
+
+.detail-thumbnails {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+}
+
+.equipment-detail-info {
+  position: sticky;
+  top: 20px;
+  background: white;
+  border: 0.5px solid var(--color-border);
+  border-radius: 4px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.equipment-detail-info__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-teal);
+  margin: 0 0 6px;
+}
+
+.equipment-detail-info__title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin: 0 0 14px;
+  line-height: 1.3;
+}
+
+.equipment-detail-info__price-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-top: 1px dashed var(--color-border);
+  border-bottom: 1px dashed var(--color-border);
+  padding: 12px 0;
+  margin-bottom: 16px;
+}
+
+.equipment-detail-info__price {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.equipment-detail-info__price span {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--color-ink-light);
+}
+
+.equipment-detail-info__stock {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-coral);
+}
+
+.equipment-detail-specs-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: white;
+  border: 0.5px solid var(--color-border);
+  border-radius: 4px;
+  padding: 20px;
+}
+
+.equipment-detail-specs-column h3 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--color-ink);
+  margin: 0 0 12px;
+}
+
+.equipment-detail-specs-column p {
+  color: var(--color-ink-light);
+  line-height: 1.6;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.equipment-detail-specs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.equipment-detail-specs li {
+  display: flex;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px dashed var(--color-border);
+  font-size: 0.85rem;
+}
+
+.equipment-detail-specs li:last-child {
+  border-bottom: none;
+}
+
+.equipment-detail-specs li span:first-child {
+  color: var(--color-ink-light);
+}
+
+.equipment-detail-specs li span:last-child {
+  color: var(--color-ink);
+  font-weight: 500;
+}
+
+@media (max-width: 1100px) {
+  .equipment-detail-main {
+    grid-template-columns: 1fr;
+  }
+
+  .equipment-detail-info {
+    position: static;
+  }
+}
+
+/* ============ ПАНЕЛЬ БРОНИРОВАНИЯ (в карточке товара) ============ */
+
+.booking-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.booking-panel__row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.booking-panel__row label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: var(--color-ink-light);
+}
+
+.booking-panel__row input {
+  padding: 7px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-family: var(--font-body);
+}
+
+.booking-panel__success {
+  color: var(--color-teal);
+  font-size: 0.85rem;
+}
+
+.booking-panel .react-datepicker,
+.react-datepicker {
+  font-family: var(--font-body) !important;
+  font-size: 0.75rem;
+  width: 100%;
+  border: 1px solid var(--color-border) !important;
+}
+
+.booking-panel .react-datepicker__month-container {
+  width: 100%;
+}
+
+.booking-panel .react-datepicker__day,
+.booking-panel .react-datepicker__day-name {
+  width: 1.7rem;
+  line-height: 1.7rem;
+  margin: 0.15rem;
+}
+
+.booking-panel .react-datepicker__header {
+  padding-top: 8px;
+}
+
+.booking-panel .react-datepicker__current-month {
+  font-size: 0.8rem;
+}
+
+/* ============ LEGACY: старая одноколоночная деталь товара (возможно, уже не используется) ============ */
+
+.detail-section {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.equipment-detail {
+  padding: 32px;
+  position: relative;
+}
+
+.detail-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: green;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.detail-header h1 {
+  font-size: 2.4rem;
+  margin: 0;
+  color: #0f172a;
+}
+
+.detail-price {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #e11d48;
+  transform: translate(-20px, 0);
+}
+
+.detail-image {
+  height: 420px;
+  background: #f1f5f9;
+  border-radius: 16px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.detail-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

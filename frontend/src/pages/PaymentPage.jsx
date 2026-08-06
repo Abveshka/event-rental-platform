@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { getMyBookings, payBooking } from "../api/bookings";
 import { extractErrorMessage } from "../api/errors";
-import "../components/equipment/Equipment.css";
+
 
 export function PaymentPage() {
   const { id } = useParams();

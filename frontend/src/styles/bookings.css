@@ -1,0 +1,165 @@
+/* ============ КАРТОЧКА БРОНИРОВАНИЯ (список "Мои бронирования") ============ */
+
+.equipment-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.equipment-card:hover {
+  border-color: #10b981;
+  transform: translateY(-6px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.equipment-card h2 {
+  font-size: 1.25rem;
+  margin: 0 0 12px 0;
+  color: #0f172a;
+}
+
+.booking-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.booking-card-header h2 {
+  margin: 0;
+}
+
+/* ============ Альтернативная BEM-разметка карточки брони (если используется) ============ */
+
+.booking-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.booking-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.booking-card__header h2 {
+  margin: 0;
+}
+
+.booking-card__meta {
+  margin: 0 0 10px;
+}
+
+.booking-card__muted {
+  color: var(--color-ink-light);
+  font-size: 0.85em;
+}
+
+.booking-card__paid {
+  color: var(--color-teal);
+}
+
+.booking-card__unpaid {
+  color: var(--color-coral);
+}
+
+.booking-card__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.booking-card__primary-action {
+  margin-top: 0;
+}
+
+.booking-card__pay-link {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+}
+
+.booking-items-list {
+  list-style: none;
+  margin: 12px 0;
+  padding: 0;
+}
+
+.booking-items-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px dashed var(--color-border);
+  padding: 8px 0;
+  font-size: 0.9rem;
+}
+
+.booking-items-list li:last-child {
+  border-bottom: none;
+}
+
+.booking-card__chat-link {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-teal);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.booking-card__chat-link:hover {
+  text-decoration: underline;
+}
+
+.booking-card__sum-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* ============ ЗВЁЗДЫ РЕЙТИНГА (выбор при отзыве) ============ */
+
+.star-rating {
+  color: var(--color-amber);
+  letter-spacing: 2px;
+}
+
+.star-rating--interactive {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.star-rating__button {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: var(--color-amber);
+  cursor: pointer;
+  padding: 0;
+}
+
+/* ============ ФОРМА ОТЗЫВА ============ */
+
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--color-border);
+}
+
+.review-form textarea {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  resize: vertical;
+}

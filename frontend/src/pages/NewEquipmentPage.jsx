@@ -4,7 +4,7 @@ import { getCategories } from "../api/categories";
 import { createEquipment } from "../api/equipment";
 import { uploadEquipmentImage } from "../api/equipment";
 import { extractErrorMessage } from "../api/errors";
-import "../components/equipment/Equipment.css";
+
 
 export function NewEquipmentPage() {
   const navigate = useNavigate();

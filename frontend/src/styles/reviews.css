@@ -1,0 +1,78 @@
+.equipment-detail-reviews {
+  background: white;
+  border: 0.5px solid var(--color-border);
+  border-radius: 4px 16px 4px 4px;
+  padding: 24px;
+}
+
+.equipment-detail-reviews h3 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--color-ink);
+  margin: 0 0 16px;
+}
+
+.reviews-summary-card {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 32px;
+  border: 1px dashed var(--color-border);
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.reviews-summary-card__score {
+  font-family: var(--font-mono);
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--color-ink-light);
+}
+
+.reviews-summary-card__stars {
+  color: var(--color-amber);
+  font-size: 1rem;
+  letter-spacing: 2px;
+}
+
+.reviews-summary-card__count {
+  font-size: 0.8rem;
+  color: var(--color-ink-light);
+  margin: 0;
+}
+
+.reviews-placeholder {
+  color: var(--color-ink-light);
+  font-size: 0.95rem;
+}
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.review-card {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.review-card__header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.review-card__stars {
+  color: var(--color-amber);
+}
+
+.review-card__comment {
+  color: var(--color-ink-light);
+  font-size: 0.9rem;
+  margin: 0;
+}

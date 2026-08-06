@@ -1,73 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getMyBookings, cancelBooking, deleteBooking } from "../api/bookings";
-import { createReview } from "../api/reviews";
-import { extractErrorMessage } from "../api/errors";
-import "../components/equipment/Equipment.css";
+import { MyBookingCard } from "../components/bookings/MyBookingCard";
 
-const STATUS_LABELS = {
-  pending: "Ожидает подтверждения",
-  confirmed: "Подтверждено",
-  cancelled: "Отменено",
-  completed: "Завершено",
-};
-
-function StarPicker({ value, onChange }) {
-  return (
-    <div className="star-picker">
-      {[1, 2, 3, 4, 5].map((n) => (
-        <button
-          key={n}
-          type="button"
-          className="star-picker__star"
-          onClick={() => onChange(n)}
-        >
-          {n <= value ? "★" : "☆"}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function ReviewForm({ booking, onSubmitted }) {
-  const [rating, setRating] = useState(5);
-  const [comment, setComment] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState(null);
-
-  const supplierId = booking.items[0]?.equipment_supplier;
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-    setIsSubmitting(true);
-
-    try {
-      await createReview(booking.id, supplierId, rating, comment);
-      onSubmitted();
-    } catch (err) {
-      setError(extractErrorMessage(err));
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return (
-    <form className="review-form" onSubmit={handleSubmit}>
-      <StarPicker value={rating} onChange={setRating} />
-      <textarea
-        placeholder="Расскажите, как прошла аренда (необязательно)"
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
-        rows="3"
-      />
-      {error && <p className="form-error">{error}</p>}
-      <button type="submit" className="btn-auth" disabled={isSubmitting}>
-        {isSubmitting ? "Отправляем..." : "Отправить отзыв"}
-      </button>
-    </form>
-  );
-}
 
 export function MyBookingsPage() {
   const [bookings, setBookings] = useState([]);
@@ -82,7 +17,7 @@ export function MyBookingsPage() {
       .finally(() => setIsLoading(false));
   }, []);
 
-  const handleCancel = async (bookingId) => {
+  async function handleCancel(bookingId) {
     try {
       const updatedBooking = await cancelBooking(bookingId);
       setBookings((current) =>
@@ -93,9 +28,9 @@ export function MyBookingsPage() {
     } catch (err) {
       alert("Не удалось отменить бронирование");
     }
-  };
+  }
 
-  const handleDelete = async (bookingId) => {
+  async function handleDelete(bookingId) {
     const confirmed = window.confirm(
       "Вы уверены, что хотите удалить это бронирование? Это действие необратимо."
     );
@@ -103,18 +38,22 @@ export function MyBookingsPage() {
 
     try {
       await deleteBooking(bookingId);
-      setBookings((current) => current.filter((booking) => booking.id !== bookingId));
+      setBookings((current) =>
+        current.filter((booking) => booking.id !== bookingId)
+      );
     } catch (err) {
       alert("Не удалось удалить бронирование");
     }
-  };
+  }
 
-  const handleReviewSubmitted = (bookingId) => {
+  function handleReviewSubmitted(bookingId) {
     setBookings((current) =>
-      current.map((b) => (b.id === bookingId ? { ...b, has_review: true } : b))
+      current.map((booking) =>
+        booking.id === bookingId ? { ...booking, has_review: true } : booking
+      )
     );
     setOpenReviewFor(null);
-  };
+  }
 
   return (
     <main className="page">
@@ -124,7 +63,9 @@ export function MyBookingsPage() {
             <p className="eyebrow">Event Rental Platform</p>
             <h1>Мои бронирования</h1>
           </div>
-          <Link to="/" className="btn-auth">← К каталогу</Link>
+          <Link to="/" className="btn-auth">
+            ← К каталогу
+          </Link>
         </div>
       </header>
 
@@ -137,82 +78,17 @@ export function MyBookingsPage() {
         )}
 
         {!isLoading && !error && bookings.length > 0 && (
-            <div className="equipment-grid">
-              {bookings.map((booking) => (
-                  <div className="equipment-card" key={booking.id}>
-                    <div className="booking-card-header">
-                      <h2>Бронирование №{booking.id}</h2>
-                      {booking.status === "cancelled" && (
-                          <button
-                              className="btn-delete-icon"
-                              onClick={() => handleDelete(booking.id)}
-                              title="Удалить бронирование"
-                          >
-                            🗑️
-                          </button>
-                      )}
-                    </div>
-
-                    <p>
-                      <strong>Статус:</strong> {STATUS_LABELS[booking.status] || booking.status}
-                      {booking.status === "cancelled" && booking.cancelled_by && (
-                          <span style={{color: "var(--color-ink-light)", fontSize: "0.85em"}}>
-              {" "}({booking.cancelled_by === "supplier" ? "отклонено поставщиком" : "отменено вами"})
-            </span>
-                      )}
-                    </p>
-                    <p><strong>Сумма:</strong> {booking.total_amount} ₽</p>
-                    <ul>
-                      {booking.items.map((item) => (
-                          <li key={item.id}>
-                            {item.equipment_title} — {item.quantity} шт.
-                            ({item.start_date} → {item.end_date})
-                          </li>
-                      ))}
-                    </ul>
-
-                {(booking.status === "pending" || booking.status === "confirmed") && (
-                  <button
-                    className="btn-auth"
-                    onClick={() => handleCancel(booking.id)}
-                  >
-                    Отменить бронирование
-                  </button>
-                )}
-
-                {booking.status === "completed" && !booking.has_review && (
-                  <>
-                    {openReviewFor === booking.id ? (
-                      <ReviewForm
-                        booking={booking}
-                        onSubmitted={() => handleReviewSubmitted(booking.id)}
-                      />
-                    ) : (
-                      <button
-                        className="btn-auth"
-                        onClick={() => setOpenReviewFor(booking.id)}
-                      >
-                        Оставить отзыв
-                      </button>
-                    )}
-                  </>
-                )}
-
-                {booking.status === "confirmed" && !booking.is_paid && (
-                    <Link to={`/bookings/${booking.id}/pay`} className="btn-book-primary"
-                          style={{display: "block", textAlign: "center", textDecoration: "none"}}>
-                      Оплатить {booking.total_amount} ₽
-                    </Link>
-                )}
-
-                {booking.is_paid && (
-                    <p className="booking-panel__success">Оплачено</p>
-                )}
-
-                {booking.status === "completed" && booking.has_review && (
-                  <p className="booking-panel__success">Спасибо, вы уже оставили отзыв</p>
-                )}
-              </div>
+          <div className="equipment-grid">
+            {bookings.map((booking) => (
+              <MyBookingCard
+                key={booking.id}
+                booking={booking}
+                isReviewOpen={openReviewFor === booking.id}
+                onCancel={handleCancel}
+                onDelete={handleDelete}
+                onOpenReview={setOpenReviewFor}
+                onReviewSubmitted={handleReviewSubmitted}
+              />
             ))}
           </div>
         )}

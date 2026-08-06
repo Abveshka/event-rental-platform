@@ -3,6 +3,7 @@ import { BookingPanel } from "./BookingPanel";
 import { API_ORIGIN } from "../../api/config";
 import { getSupplierReviews } from "../../api/reviews";
 import { Link } from "react-router-dom";
+import { StarRating } from "../reviews/StarRating";
 
 export function EquipmentDetail({ item, onClose, isLoggedIn, onRequireAuth }) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -20,11 +21,6 @@ export function EquipmentDetail({ item, onClose, isLoggedIn, onRequireAuth }) {
   const averageRating = reviews.length > 0
     ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
     : null;
-
-  const renderStars = (rating) => {
-    const full = Math.round(rating);
-    return "★".repeat(full) + "☆".repeat(5 - full);
-  };
 
   return (
     <div className="equipment-detail-page">
@@ -102,7 +98,9 @@ export function EquipmentDetail({ item, onClose, isLoggedIn, onRequireAuth }) {
 
         <div className="reviews-summary-card">
           <div className="reviews-summary-card__score">{averageRating || "—"}</div>
-          <div className="reviews-summary-card__stars">{renderStars(averageRating || 0)}</div>
+          <div className="reviews-summary-card__stars">
+            <StarRating value={averageRating || 0} />
+          </div>
           <p className="reviews-summary-card__count">
             {reviews.length > 0 ? `${reviews.length} отзыв(ов)` : "Пока нет отзывов"}
           </p>
@@ -120,7 +118,9 @@ export function EquipmentDetail({ item, onClose, isLoggedIn, onRequireAuth }) {
               <div className="review-card" key={review.id}>
                 <div className="review-card__header">
                   <span className="review-card__author">{review.reviewer}</span>
-                  <span className="review-card__stars">{renderStars(review.rating)}</span>
+                  <span className="review-card__stars">
+                    <StarRating value={review.rating} />
+                  </span>
                 </div>
                 {review.comment && <p className="review-card__comment">{review.comment}</p>}
               </div>

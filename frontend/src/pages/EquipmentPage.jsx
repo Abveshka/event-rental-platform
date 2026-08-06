@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useState } from "react";
 import { getCategories } from "../api/categories";
@@ -7,7 +7,6 @@ import { EquipmentFilters } from "../components/equipment/EquipmentFilters";
 import { EquipmentList } from "../components/equipment/EquipmentList";
 import { EquipmentDetail } from "../components/equipment/EquipmentDetail.jsx";
 import { AuthPanel } from "../components/auth/AuthPanel";
-import "../components/equipment/Equipment.css";
 
 export function EquipmentPage() {
   const { idSlug } = useParams();
@@ -26,7 +25,7 @@ export function EquipmentPage() {
 
   // Фильтры читаем прямо из URL — отдельного useState для них больше нет
   const filters = {
-    city: searchParams.get("city") || "",
+    city: (searchParams.get("city") || "").trim(),
     category: searchParams.get("category") || "",
     maxPrice: searchParams.get("maxPrice") || "",
     delivery: searchParams.get("delivery") === "true",
@@ -43,7 +42,7 @@ export function EquipmentPage() {
     setError("");
 
     const currentFilters = {
-      city: searchParams.get("city") || "",
+      city: (searchParams.get("city") || "").trim(),
       category: searchParams.get("category") || "",
       maxPrice: searchParams.get("maxPrice") || "",
       delivery: searchParams.get("delivery") === "true",
@@ -60,17 +59,6 @@ export function EquipmentPage() {
     window.addEventListener("auth-expired", handleAuthExpired);
     return () => window.removeEventListener("auth-expired", handleAuthExpired);
   }, []);
-
-  useEffect(() => {
-    if (!id) return;
-    const timeoutId = setTimeout(() => {
-      document.querySelector('.detail-section')?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }, 80);
-    return () => clearTimeout(timeoutId);
-  }, [id]);
 
   function handleFilterChange(event) {
     const { name, value, type, checked } = event.target;
@@ -91,9 +79,6 @@ export function EquipmentPage() {
     setSearchParams({});
   }
 
-  const handleCardClick = (item) => {
-    navigate(`/equipment/${item.id}-${item.slug}?${searchParams.toString()}`);
-  };
 
   function handleLogout() {
     localStorage.removeItem("access_token");
@@ -102,8 +87,40 @@ export function EquipmentPage() {
   }
 
   const selectedItem = id
-    ? equipment.find((item) => String(item.id) === id) || null
-    : null;
+      ? equipment.find((item) => String(item.id) === id) || null
+      : null;
+
+  const SCROLL_KEY = "equipment-catalog-scroll";
+
+// Сохраняем при клике на карточку
+  const handleCardClick = (item) => {
+    sessionStorage.setItem(SCROLL_KEY, String(window.scrollY));
+    navigate(`/equipment/${item.id}-${item.slug}?${searchParams.toString()}`);
+  };
+
+// useEffect для скролла
+  useEffect(() => {
+    if (selectedItem) {
+      requestAnimationFrame(() => {
+        document.querySelector(".detail-section")?.scrollIntoView({
+          behavior: "instant",
+          block: "start",
+        });
+      });
+    } else {
+      const saved = sessionStorage.getItem(SCROLL_KEY);
+      if (saved !== null) {
+        requestAnimationFrame(() => {
+          window.scrollTo({
+            top: Number(saved),
+            behavior: "instant",
+          });
+        });
+        // по желанию можно сразу очистить
+        // sessionStorage.removeItem(SCROLL_KEY);
+      }
+    }
+  }, [selectedItem]);
 
   return (
     <main className="page">

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { getSuppliers } from "../api/suppliers";
-import "../components/equipment/Equipment.css";
+import { StarRating } from "../components/reviews/StarRating";
 
 export function SuppliersPage() {
   const navigate = useNavigate();
@@ -42,11 +42,6 @@ export function SuppliersPage() {
   };
 
   const handleReset = () => setSearchParams({});
-
-  const renderStars = (rating) => {
-    const full = Math.round(rating);
-    return "★".repeat(full) + "☆".repeat(5 - full);
-  };
 
   return (
     <main className="page">
@@ -130,7 +125,13 @@ export function SuppliersPage() {
 
                   <div className="equipment-card-tag__footer">
                     <span className="equipment-card-tag__price">
-                      {supplier.rating > 0 ? `${supplier.rating} ${renderStars(supplier.rating)}` : "Нет оценок"}
+                      {supplier.rating > 0 ? (
+                        <>
+                          {supplier.rating} <StarRating value={supplier.rating} />
+                        </>
+                      ) : (
+                        "Нет оценок"
+                      )}
                     </span>
                     <span className="equipment-card-tag__stock">
                       {supplier.listings_count} объявлени{supplier.listings_count === 1 ? "е" : "й"}

@@ -9,7 +9,6 @@ import {
 } from "../api/equipment";
 import { extractErrorMessage } from "../api/errors";
 import { API_ORIGIN } from "../api/config";
-import "../components/equipment/Equipment.css";
 
 export function EditEquipmentPage() {
   const { id } = useParams();

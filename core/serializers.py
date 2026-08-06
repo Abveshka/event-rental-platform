@@ -13,6 +13,7 @@ from .models import (
     RentalRequest,
     RequestItem,
     Review,
+    Message,
 )
 
 class UserSerializer(serializers.ModelSerializer):
@@ -312,21 +313,6 @@ class ReviewSerializer(serializers.ModelSerializer):
         supplier.rating = round(avg or 0, 2)
         supplier.save(update_fields=["rating"])
 
-class SupplierPublicSerializer(serializers.ModelSerializer):
-    display_name = serializers.SerializerMethodField()
-    specialties_list = serializers.SerializerMethodField()
-
-    class Meta:
-        model = User
-        fields = ["id", "display_name", "city", "rating", "description", "specialties_list"]
-
-    def get_display_name(self, obj):
-        return obj.company_name or obj.username
-
-    def get_specialties_list(self, obj):
-        if not obj.specialties:
-            return []
-        return [tag.strip() for tag in obj.specialties.split(",") if tag.strip()]
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -352,3 +338,19 @@ class SupplierPublicSerializer(serializers.ModelSerializer):
 
     def get_listings_count(self, obj):
         return obj.equipments.filter(is_active=True).count()
+
+class MessageSerializer(serializers.ModelSerializer):
+    sender_name = serializers.SerializerMethodField()
+    is_mine = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Message
+        fields = ["id", "booking", "sender_name", "is_mine", "text", "created_at"]
+        read_only_fields = ["created_at"]
+
+    def get_sender_name(self, obj):
+        return obj.sender.company_name or obj.sender.username
+
+    def get_is_mine(self, obj):
+        request = self.context.get("request")
+        return request and obj.sender_id == request.user.id

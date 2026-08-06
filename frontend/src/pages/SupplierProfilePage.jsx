@@ -3,7 +3,8 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { getSupplierProfile } from "../api/suppliers";
 import { getEquipment } from "../api/equipment";
 import { getSupplierReviews } from "../api/reviews";
-import "../components/equipment/Equipment.css";
+import { StarRating } from "../components/reviews/StarRating";
+
 
 export function SupplierProfilePage() {
   const { id } = useParams();
@@ -31,11 +32,6 @@ export function SupplierProfilePage() {
       .catch(() => setError("Не удалось загрузить профиль поставщика"))
       .finally(() => setIsLoading(false));
   }, [id]);
-
-  const renderStars = (rating) => {
-    const full = Math.round(rating);
-    return "★".repeat(full) + "☆".repeat(5 - full);
-  };
 
   if (isLoading) {
     return (
@@ -72,7 +68,15 @@ export function SupplierProfilePage() {
           <li><span>Город</span><span>{supplier.city || "Не указан"}</span></li>
           <li>
             <span>Рейтинг</span>
-            <span>{supplier.rating > 0 ? `${supplier.rating} ${renderStars(supplier.rating)}` : "Пока нет оценок"}</span>
+            <span>
+              {supplier.rating > 0 ? (
+                <>
+                  {supplier.rating} <StarRating value={supplier.rating} />
+                </>
+              ) : (
+                "Пока нет оценок"
+              )}
+            </span>
           </li>
           <li><span>Активных объявлений</span><span>{listings.length}</span></li>
         </ul>
@@ -156,7 +160,9 @@ export function SupplierProfilePage() {
               <div className="review-card" key={review.id}>
                 <div className="review-card__header">
                   <span className="review-card__author">{review.reviewer}</span>
-                  <span className="review-card__stars">{renderStars(review.rating)}</span>
+                  <span className="review-card__stars">
+                    <StarRating value={review.rating} />
+                  </span>
                 </div>
                 {review.comment && <p className="review-card__comment">{review.comment}</p>}
               </div>
