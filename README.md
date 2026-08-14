@@ -89,6 +89,34 @@ npm run dev
 
 Откройте адрес, который выведет Vite (обычно `http://localhost:5173`). По умолчанию frontend обращается к API по адресу `http://127.0.0.1:8000/api`.
 
+## Запуск в Docker
+
+Docker Compose поднимает PostgreSQL, backend и frontend одной командой. Убедитесь, что Docker Desktop запущен, затем из корня проекта выполните:
+
+```powershell
+docker compose up --build
+```
+
+После сборки приложение будет доступно по адресу `http://localhost:5173`, API — по адресу `http://localhost:8000`.
+
+При первом запуске backend автоматически применит миграции. Чтобы добавить демонстрационные данные в базу Docker:
+
+```powershell
+docker compose exec backend python manage.py seed_data
+```
+
+Остановить сервисы можно сочетанием `Ctrl+C`. Для удаления контейнеров выполните:
+
+```powershell
+docker compose down
+```
+
+Команда ниже также удалит данные PostgreSQL и загруженные медиафайлы Docker. Используйте её, только если хотите начать с чистой базы:
+
+```powershell
+docker compose down -v
+```
+
 ## Полезные команды
 
 ```powershell

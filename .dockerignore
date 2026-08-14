@@ -1,0 +1,16 @@
+.git
+.gitignore
+.idea
+.env
+.env.*
+!.env.example
+venv
+.venv
+__pycache__
+*.py[codz]
+node_modules
+frontend/node_modules
+frontend/dist
+media
+db.sqlite3
+*.log

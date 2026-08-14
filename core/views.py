@@ -1,6 +1,6 @@
 from rest_framework import serializers, viewsets, status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from datetime import date, timedelta
@@ -675,7 +675,7 @@ class BookingViewSet(viewsets.ModelViewSet):
 )
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     http_method_names = ["get", "post"]
 
     def get_queryset(self):
