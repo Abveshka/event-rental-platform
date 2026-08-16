@@ -91,6 +91,7 @@ class EmailTokenObtainPairView(TokenObtainPairView):
         responses={200: UserSerializer, 401: OpenApiResponse(description="Пользователь не авторизован")},
     ),
 )
+
 class MeView(APIView):
     permission_classes = [IsAuthenticated]
 

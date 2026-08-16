@@ -59,7 +59,7 @@ export function SupplierProfilePage() {
             <p className="eyebrow">Профиль поставщика</p>
             <h1>{supplier.display_name}</h1>
           </div>
-          <Link to="/" className="btn-auth">← К каталогу</Link>
+          <Link to="/suppliers" className="btn-auth">← Поставщики</Link>
         </div>
       </header>
 
